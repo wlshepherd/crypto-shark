@@ -55,7 +55,7 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <header className="App-header"></header>
-      <Router basename="/repo">
+      <Router basename="/crypto-shark">
         <Routes>
           <Route path="/" element={<Layout><Dashboard /></Layout>} />
         </Routes>
