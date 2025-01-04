@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/Dashboard.scss';
 import TrendingCoins from './components/TrendingCrypto';
 import BitcoinChart from './components/BitcoinChart';
@@ -7,7 +6,7 @@ import EthereumChart from './components/EthereumChart';
 import Footer from './components/Footer';
 import CryptoDoughnutChart from './components/CryptoDoughnutChart';
 import CryptoConverter from './components/CryptoConverter';
-import Layout from './Layout'; 
+import Navbar from './components/NavBar'; 
 
 const Dashboard: React.FC = () => {
   const [selectedChart, setSelectedChart] = useState('bitcoin');
@@ -54,11 +53,8 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <header className="App-header"></header>
-      <Router basename="/crypto-shark">
-        <Routes>
-          <Route path="/" element={<Layout><Dashboard /></Layout>} />
-        </Routes>
-      </Router>
+      <Navbar />
+      <Dashboard />
     </div>
   );
 };

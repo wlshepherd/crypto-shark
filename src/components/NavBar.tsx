@@ -13,6 +13,7 @@ const Navbar = () => {
       </div>
       <ul>
         <li>Dashboard</li>
+        <li>Wallet</li>
         <li>Transfer Crypto</li>
         <li>My Account</li>
         <li className="username">{username}</li>

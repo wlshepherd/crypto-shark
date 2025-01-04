@@ -11,11 +11,21 @@ const CryptoDoughnutChart: React.FC = () => {
 
   useEffect(() => {
     const data: CryptoData[] = [
-      { axis: 'BTC', value: 150 },
-      { axis: 'ETH', value: 99 },
-      { axis: 'Ripple', value: 81 },
-      { axis: 'Dogecoin', value: 56 },
+      { axis: 'BTC', value: 1 },
+      { axis: 'ETH', value: 40 },
+      { axis: 'Dogecoin', value: 500000 },
     ];
+
+    const conversionRate: { [key: string]: number } = {
+      'BTC': 50000,
+      'ETH': 1500, 
+      'Dogecoin': 0.05
+    };
+
+    const adjustedData = data.map(d => ({
+      axis: d.axis,
+      value: d.value * conversionRate[d.axis]
+    }));
 
     const width = 375;
     const height = 375;
@@ -25,7 +35,7 @@ const CryptoDoughnutChart: React.FC = () => {
     const cornerRadius = 0;
 
     const color = d3.scaleSequential<string>()
-      .domain([0, data.length - 1])
+      .domain([0, adjustedData.length - 1])
       .interpolator(d3.interpolateRgb("#8a2be2", "#0000ff"));
 
     const svg = d3.select(svgRef.current)
@@ -69,14 +79,19 @@ const CryptoDoughnutChart: React.FC = () => {
       .sort(null);
 
     const arcs = svg.selectAll('.arc')
-      .data(pie(data))
+      .data(pie(adjustedData))
       .enter()
       .append('g')
       .attr('class', 'arc');
 
     const tooltip = d3.select('body').append('div')
       .attr('class', 'tooltip')
-      .style('opacity', 0);
+      .style('opacity', 0)
+      .style('position', 'absolute')
+      .style('padding', '8px')
+      .style('background', 'white')
+      .style('border', '1px solid black')
+      .style('border-radius', '4px');
 
     arcs.append('path')
       .attr('d', arc)
@@ -87,11 +102,11 @@ const CryptoDoughnutChart: React.FC = () => {
         d3.select(event.currentTarget)
           .transition()
           .duration(200)
-          .attr('d', () => hoverArc(d as d3.PieArcDatum<CryptoData>));
+          .attr('d', hoverArc(d));
         tooltip.transition()
           .duration(200)
           .style('opacity', .9);
-        tooltip.html(`${d.data.value}`)
+        tooltip.html(`${d.data.axis}: ${d.data.value / conversionRate[d.data.axis]} coins`)
           .style('left', (event.pageX) + 'px')
           .style('top', (event.pageY - 28) + 'px');
       })
@@ -99,7 +114,7 @@ const CryptoDoughnutChart: React.FC = () => {
         d3.select(event.currentTarget)
           .transition()
           .duration(200)
-          .attr('d', () => arc(d as d3.PieArcDatum<CryptoData>));
+          .attr('d', arc(d));
         tooltip.transition()
           .duration(200)
           .style('opacity', 0);
